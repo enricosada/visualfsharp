@@ -78,6 +78,10 @@ REM @if ERRORLEVEL 1 echo Error: 'tests\BuildTestTools.cmd debug' failed && goto
 
 pushd tests
 
+perl --version
+where perl
+
+
 REM Disabled while working out perl problem, see https://github.com/Microsoft/visualfsharp/pull/169
 REM call RunTests.cmd debug fsharp Smoke
 REM @if ERRORLEVEL 1 echo Error: 'RunTests.cmd debug fsharpqa Smoke' failed && goto :eof
