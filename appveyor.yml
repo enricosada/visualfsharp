@@ -1,4 +1,9 @@
 init: 
+install:
+  - ps: (new-object net.webclient).DownloadFile('http://downloads.activestate.com/ActivePerl/releases/5.18.4.1803/ActivePerl-5.18.4.1803-MSWin32-x86-64int-298573.msi', 'ActivePerl-5.18.4.1803.msi')
+  - ps: msiexec /i ActivePerl-5.18.4.1803.msi /quiet /qn /norestart /log install.log
+  - cmd: where perl
+  - cmd: perl --version
 build_script: 
   - cmd: appveyor-build.cmd
 test: off 
