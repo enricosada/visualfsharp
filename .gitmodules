@@ -1,0 +1,3 @@
+[submodule "vsintegration/VisualStudio-SharedProject"]
+	path = vsintegration/VisualStudio-SharedProject
+	url = https://github.com/Microsoft/VisualStudio-SharedProject.git
