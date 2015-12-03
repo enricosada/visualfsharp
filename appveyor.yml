@@ -4,9 +4,7 @@ init:
 build_script: 
   - cmd: where link
   - cmd: link --help
-  - cmd: '"%VS140COMNTOOLS%\..\..\VC\bin\link.exe" /?'
-  - cmd: '"%VS140COMNTOOLS%\..\..\VC\bin\link.exe" /dump /headers dummy.exe'
-  - cmd: link /dump /headers dummy.exe
+  - cmd: prova.bat
 
 # scripts that run after cloning repository
 install:
