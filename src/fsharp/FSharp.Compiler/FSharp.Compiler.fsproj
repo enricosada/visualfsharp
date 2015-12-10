@@ -537,6 +537,5 @@
       <Name>FSharp.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(FSharpSourcesRoot)\FSharpSource.targets" />
   <Import Project="$(FSharpSourcesRoot)\..\lkg\FSharp-$(LkgVersion)\bin\FSharp.PowerPack.targets" />
 </Project>
