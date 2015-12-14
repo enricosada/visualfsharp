@@ -1,0 +1,22 @@
+language: csharp
+
+os:
+  - linux
+
+mono:
+  - 4.0.5
+
+before_install:
+  - sudo apt-get update -qq
+  # dnvm deps 
+  - sudo apt-get install unzip curl
+  # dnx deps 
+  - sudo apt-get install libunwind8 gettext libssl-dev libcurl4-openssl-dev zlib1g libicu-dev uuid-dev
+
+script: 
+  - mono --version
+  - dnvm version
+  - dnvm list
+  - dnvm upgrade -r coreclr
+  - dnvm list
+  
