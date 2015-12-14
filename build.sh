@@ -4,4 +4,8 @@ curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX
 
 dnvm version
 
+dnvm list
+
 dnvm upgrade -r coreclr
+
+dnvm list

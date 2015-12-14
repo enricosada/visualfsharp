@@ -20,7 +20,4 @@ before_install:
 
 script: 
   - mono --version
-  - dnvm version
-  - dnvm list
-  - dnvm upgrade -r coreclr
-  - dnvm list
+  - ./build.sh
