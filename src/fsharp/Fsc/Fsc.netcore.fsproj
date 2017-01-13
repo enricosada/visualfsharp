@@ -87,6 +87,8 @@
 
   <Import Project="$(FSharpSourcesRoot)\FSharpSource.netcore.props" />
 
+  <Import Project="$(FSharpSourcesRoot)\FSharpSource.UseProtoFsc.net40.props" />
+
   <ItemGroup>
     <PackageReference Include="FSharp.NET.Sdk" Version="1.0.0-char-*">
       <PrivateAssets>All</PrivateAssets>
