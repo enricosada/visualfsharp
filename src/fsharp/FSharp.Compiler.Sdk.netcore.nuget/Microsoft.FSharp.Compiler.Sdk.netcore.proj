@@ -1,0 +1,71 @@
+<Project ToolsVersion="15.0" DefaultTargets="CreateNugetPackage">
+  <PropertyGroup>
+    <FSharpSourcesRoot>$(MSBuildProjectDirectory)\..\..\</FSharpSourcesRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageLicenceUrl Condition="'$(PackageLicenceUrl)' == ''">https://github.com/Microsoft/visualfsharp/blob/master/License.txt</PackageLicenceUrl>
+    <PackageProjectUrl Condition="'$(PackageProjectUrl)' == ''">https://github.com/Microsoft/visualfsharp</PackageProjectUrl>
+    <PackageVersion    Condition="'$(PackageVersion)' == ''"   >$(NuGetPerBuildPreReleaseVersion)</PackageVersion>
+    <PackageAuthors    Condition="'$(PackageAuthors)' == ''"   >Microsoft</PackageAuthors>
+    <PackageTags       Condition="'$(PackageTags)' == ''"      >Visual F# Compiler FSharp coreclr functional programming</PackageTags>
+    <OutputPath>$(FSharpSourcesRoot)\..\$(Configuration)\coreclr\bin</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_BaseDir>$(MSBuildThisFileDirectory)bin\</_BaseDir>
+    <_CoreclrReleaseDir>$(FSharpSourcesRoot)..\$(Configuration)\coreclr\bin\</_CoreclrReleaseDir>
+    <ArtifactsDir>$(FSharpSourcesRoot)..\$(Configuration)\artifacts</ArtifactsDir>
+  </PropertyGroup>
+
+  <Target Name="CleanPackageBaseDir">
+    <RemoveDir Directories="$(_BaseDir)" />
+  </Target>
+
+  <Target Name="PreparePackageBaseDir">
+
+    <Error Text="The Configuration property must be set." Condition="'$(Configuration)' == ''" />  
+
+    <ItemGroup>
+      <!--the published fsc for netcoreapp1.0 -->
+      <PublishedFsc Include="$(FSharpSourcesRoot)fsharp\Fsc\bin\$(Configuration)\netcoreapp1.0\publish\**\*" />
+      <!--the FSharp.Build assembly with Fsc msbuild task-->
+      <PublishedFsc Include="$(_CoreclrReleaseDir)FSharp.Build.dll" />
+      <PublishedFsc Include="$(_CoreclrReleaseDir)FSharp.Build.pdb" />
+    </ItemGroup>
+
+    <RemoveDir Directories="$(_BaseDir)" />
+
+    <MakeDir Directories="$(_BaseDir)build\netcoreapp1.0" />
+    <MakeDir Directories="$(_BaseDir)buildCrossTargeting" />
+    <Copy SourceFiles="@(PublishedFsc)" DestinationFolder="$(_BaseDir)build\netcoreapp1.0\%(RecursiveDir)" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)build\Microsoft.FSharp.Compiler.Sdk.netcore.props" DestinationFolder="$(_BaseDir)build" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)buildCrossTargeting\Microsoft.FSharp.Compiler.Sdk.netcore.props" DestinationFolder="$(_BaseDir)buildCrossTargeting" SkipUnchangedFiles="True" />
+
+    <!-- Replace fsc.dll with fsc.exe generated with the current build script -->
+    <Delete Files="$(_BaseDir)build\netcoreapp1.0\fsc.dll" />
+    <Copy SourceFiles="$(_CoreclrReleaseDir)fsc.exe" DestinationFiles="$(_BaseDir)build\netcoreapp1.0\fsc.dll" OverwriteReadOnlyFiles="True" />
+    <Copy SourceFiles="$(_CoreclrReleaseDir)fsc.pdb" DestinationFiles="$(_BaseDir)build\netcoreapp1.0\fsc.pdb" OverwriteReadOnlyFiles="True" />
+  </Target>
+
+  <ItemGroup>
+    <PackageNuspec Include="Microsoft.FSharp.Compiler.Sdk.netcore.nuspec" />
+  </ItemGroup>
+
+  <Target Name="NugetPack" DependsOnTargets="PreparePackageBaseDir"
+          Inputs="@(PackageNuspec)" 
+          Outputs='$(ArtifactsDir)\"%(PackageNuspec.Filename)).nupkg'>
+    <PropertyGroup>
+      <PackageProperties>--properties licenseUrl="$(PackageLicenceUrl)";version=$(PackageVersion);authors="$(PackageAuthors)";projectUrl="$(PackageProjectUrl)";tags="$(PackageTags)"</PackageProperties>
+      <NupkgDirectory>$(ArtifactsDir)</NupkgDirectory>
+      <_DotnetExe>$(MSBuildExtensionsPath)\..\..\dotnet</_DotnetExe>
+      <_BasePath>$(_BaseDir.TrimEnd('\'))</_BasePath>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(NupkgDirectory)" />
+    <Exec Command='$(_DotnetExe) nuget pack @(PackageNuspec) --base-path "$(_BasePath)" --exclude-empty-directories $(PackageProperties) --output-directory "$(NupkgDirectory)"' />
+  </Target>
+
+  <Target Name="CreateNugetPackage" DependsOnTargets="NugetPack;CleanPackageBaseDir" />
+
+</Project>
