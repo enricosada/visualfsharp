@@ -55,7 +55,6 @@
     <DefineConstants Condition=" '$(FX_NO_LOADER)' != 'true' ">$(DefineConstants);FX_RESHAPED_REFLECTION_CORECLR</DefineConstants>
     <DefineConstants>$(DefineConstants);FX_RESHAPED_MSBUILD</DefineConstants>
     <DefineConstants>$(DefineConstants);FSI_TODO_NETCORE</DefineConstants>
-    <OtherFlags>$(OtherFlags) --simpleresolution</OtherFlags>
   </PropertyGroup>
 
 </Project>
